@@ -1,4 +1,5 @@
 venv/
+archive/
 dataset/
 output/real
 mainv6.py
