@@ -1,12 +1,3 @@
-"""
-Program Komparasi FaceNet, Arc2Face, dan RetinaFace
-SESUAI TABEL 3.2.1 - Format Output: Training Curves per Konfigurasi
-100% REAL IMPLEMENTATION
-
-Output: 4 kurva (Precision, Recall, F1, ROC-AUC) per konfigurasi
-Total: 24 grafik (3 methods × 8 configs)
-"""
-
 import os
 import cv2
 import torch
@@ -53,7 +44,7 @@ OPTIMIZERS = ['Adam', 'AdaGrad']
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 plt.style.use('seaborn-v0_8-darkgrid')
-print(f"🔥 Device: {DEVICE}")
+print(f"Device: {DEVICE}")
 
 
 # ==========================================
@@ -131,7 +122,7 @@ class TrainingCurvesEngine:
         import ssl
         ssl._create_default_https_context = ssl._create_unverified_context
         
-        print("📥 Loading Pre-trained Models...")
+        print("Loading Pre-trained Models...")
         
         self.detector = MTCNN(keep_all=False, device=DEVICE, post_process=False)
         self.facenet = InceptionResnetV1(pretrained='vggface2', classify=False).eval().to(DEVICE)
@@ -142,7 +133,7 @@ class TrainingCurvesEngine:
         resnet = models.resnet50(weights=models.ResNet50_Weights.DEFAULT)
         self.retinaface_backbone = torch.nn.Sequential(*list(resnet.children())[:-1]).eval().to(DEVICE)
         
-        print("✅ All models loaded!\n")
+        print("All models loaded!\n")
     
     def load_dataset(self):
         print(f"\n{'='*80}")
@@ -213,7 +204,7 @@ class TrainingCurvesEngine:
             except Exception as e:
                 continue
         
-        print(f"\n✅ Extracted: {len(valid_labels)} faces\n")
+        print(f"\nExtracted: {len(valid_labels)} faces\n")
         
         return (np.array(facenet_emb), np.array(arc2face_emb), 
                 np.array(retinaface_emb), np.array(valid_labels))
@@ -223,7 +214,7 @@ class TrainingCurvesEngine:
         Training dengan recording metrics per epoch untuk plotting curves
         """
         config_name = f"{split_name}_{lr_name}_{opt_name}"
-        print(f"\n▶ {method_name} | Config: {config_name}")
+        print(f"\n>> {method_name} | Config: {config_name}")
         
         # Get configuration
         train_ratio, test_ratio = SPLIT_RATIOS[split_name]
@@ -326,7 +317,7 @@ class TrainingCurvesEngine:
             'auc': history['auc'][-1]
         }
         
-        print(f"  ✓ Final: P={final_metrics['precision']:.3f}, "
+        print(f"  Final: P={final_metrics['precision']:.3f}, "
               f"R={final_metrics['recall']:.3f}, F1={final_metrics['f1']:.3f}, "
               f"AUC={final_metrics['auc']:.3f}\n")
         
